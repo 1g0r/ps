@@ -1,0 +1,26 @@
+{
+	'172.16.252.38': {
+		name: 'scheduler',
+		user: '',
+		password: '',
+		apps:{
+			Scheduler: null,
+			AngleSharp: null,
+			Bridge: null
+		}
+	},
+	'172.16.252.39': {
+		name: 'parsers',
+		user: '',
+		password: '',
+		apps:{}
+	},
+	'172.16.252.30': {
+		name: 'ftp',
+		user: '',
+		password: '',
+		apps: {
+			AngleSharp: ''
+		}
+	}
+}
