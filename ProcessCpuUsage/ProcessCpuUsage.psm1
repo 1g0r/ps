@@ -256,10 +256,3 @@ $global:PSDefaultParameterValues = @{
     Enable git powershell
 #>
 #(Resolve-Path "$env:LOCALAPPDATA\GitHub\shell.ps1")
-
-
-
-
-
-
-
