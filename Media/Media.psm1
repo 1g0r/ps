@@ -1,32 +1,32 @@
 ﻿$configFile = @"
 {
     Servers: {
-        '172.16.252.38': {
-            user: 'trustsys',
-            password: 'cYZ7WNm#Qu'
-        },
-        '172.16.252.39': {
-		    user: 'trustsys',
-		    password: 'cYZ7WNm#Qu'
-	    },
-	    '172.16.252.30': {
-		    user: 'trustsys',
-		    password: 'cYZ7WNm#Qu'
-		}
+    	'127.0.0.1': {
+		user: '',
+		password: ''
+	},
+	'127.0.0.1': {
+		user: '',
+		password: ''
+	},
+	'127.0.0.1': {
+		user: '',
+		password: ''
+	}
     },
 	
 	Components: {
 		AngleSharp: {
-            Name: 'Mindscan.Media.Hosts.AngleSharp',
-            Servers: ['172.16.252.30', '172.16.252.38', '172.16.252.39']
+            Name: 'AngleSharp',
+            Servers: ['127.0.0.1', '127.0.0.1', '127.0.0.1']
 		},
 		BoardParser: {
-            Name: 'Mindscan.Media.BoardParser.Host',
-            Servers: ['172.16.252.39']
+            Name: 'BoardParser.Host',
+            Servers: ['127.0.0.1']
 		},
         PageParser: {
-            Name: 'Mindscan.Media.PageParser.Host',
-            Servers: ['172.16.252.30', '172.16.252.39']
+            Name: 'PageParser.Host',
+            Servers: ['127.0.0.1', '127.0.0.1']
         }
 	}
 }
