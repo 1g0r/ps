@@ -1,0 +1,59 @@
+{
+    Servers: {
+        '172.16.252.38': {
+            user: 'trustsys',
+            password: 'cYZ7WNm#Qu'
+        },
+        '172.16.252.39': {
+		    user: 'trustsys',
+		    password: 'cYZ7WNm#Qu'
+	    },
+	    '172.16.252.30': {
+		    user: 'trustsys',
+		    password: 'cYZ7WNm#Qu'
+		}
+    },
+	
+	Components: {
+		AngleSharp: {
+            Name: 'Mindscan.Media.Hosts.AngleSharp',
+            Servers: ['172.16.252.38']
+		},
+		BoardParser: {
+            Name: 'Mindscan.Media.BoardParser.Host',
+            Servers: ['172.16.252.39']
+		},
+        PageParser: {
+            Name: 'Mindscan.Media.PageParser.Host',
+            Servers: ['172.16.252.39']
+        },
+		Scheduler: {
+			Name: 'Mindscan.Media.Hosts.Scheduler',
+			Servers: ['172.16.252.38']
+		},
+		CrawlController: {
+			Name: 'Mindscan.Media.Hosts.CrawlController',
+			Servers: ['172.16.252.39']
+		},
+		Bundle3: {
+			Name: 'Mindscan.Media.Hosts.Bundle3',
+			Servers: ['172.16.252.39']
+		},
+		Bridge: {
+			Name: 'Mindscan.Media.Hosts.Bridge',
+			Servers: ['172.16.252.38']
+		},
+		CollectorsIntegration: {
+			Name: 'Mindscan.Media.Hosts.CollectorsIntegration',
+			Servers: ['172.16.252.38']
+		},
+		TvRainVideo: {
+			Name: 'Mindscan.Media.Hosts.TvRainVideo',
+			Servers: ['172.16.252.38']
+		},
+		FtpVideo: {
+			Name: 'Mindscan.Media.Hosts.FtpVideo',
+			Servers: ['172.16.252.30']
+		}
+	}
+}
