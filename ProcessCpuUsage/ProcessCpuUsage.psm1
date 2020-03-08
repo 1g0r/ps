@@ -1,4 +1,26 @@
-﻿$wrapProcess = {
+﻿function Convert-ToPSObject{
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   Position=0)]
+        $Object
+    )
+    $type = $object.GetType();
+    if($type.Name.Equals('PSCustomObject', [System.StringComparison]::InvariantCultureIgnoreCase)){
+        $result = @{};
+        $Object.psobject.properties | % {$result[$_.name] = (Convert-ToPSObject $_.value)}
+        return $result;
+    }
+    if($type.IsArray){
+        $arr = @()   
+        $Object | % { $arr += Convert-ToPSObject $_ }       
+        return $arr
+    }
+    return $Object;
+}
+ $wrapProcess = {
     param(
         [System.Diagnostics.Process]$proc
     )
