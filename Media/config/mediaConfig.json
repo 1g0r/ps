@@ -1,16 +1,16 @@
 {
     Servers: {
         '172.16.252.38': {
-            user: 'trustsys',
-            password: 'cYZ7WNm#Qu'
+            user: '',
+            password: ''
         },
         '172.16.252.39': {
-		    user: 'trustsys',
-		    password: 'cYZ7WNm#Qu'
+		    user: '',
+		    password: ''
 	    },
 	    '172.16.252.30': {
-		    user: 'trustsys',
-		    password: 'cYZ7WNm#Qu'
+		    user: '',
+		    password: ''
 		}
     },
 	
