@@ -76,6 +76,56 @@ class ParameterBase{
 class CommandBase{
   [ParameterBase[]] $parameters;
   [ScriptBlock] $body;
+  
+  CommandBase([ParameterBase[]]$parameters, [ScriptBlock]$body) {
+    $this.parameters = $parameters;
+    
+    if ($null -eq $body) {
+      throw "Command body can not be null."
+    }
+    $this.body = $body
+  }
+  
+  [System.Management.Automation.RuntimeDefinedParameterDictionary] BuildParameters() {
+    $result = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+    foreach ($param in $this.parameters) {
+      $result.Add($param.name, $param.Build())
+    }
+    return $result;
+  }
+  
+  [void] Invoke([object[]]$argv) {
+    Invoke-Command -ScriptBlock $this.body -ArgumentList $argv | Out-Default # To display colors
+  }
+  
+  static [string[]] getBranches([string]$repoPath, [string]$user, [bool]$mine = $false) {
+    $curPath = Get-Location;
+    Set-Location $repoPath
+    $result = git branch |
+    Where-Object { if ($mine) { $_.Contains($user) } else { -not $_.Contains($user) } } |
+    ForEach-Object { $_.Trim("*", " ").Replace("$($user)/", "") } |
+    Sort-Object
+    Set-Location $curPath
+    return $result;
+  }
+  
+  static [int] removeFolder([string]$path, [System.Management.Automation.PSMethod]$shouldDelete, [bool]$recurse) {
+    if (-not (Test-Path $path)) {
+      return 0;
+    }
+    $count = 0
+    $items = if ($recurse) { Get-ChildItem $path -Recurse -Directory } else { Get-ChildItem $path -Directory }
+    foreach ($dit in $items) {
+      if ($shouldDelete.Invoke($dir)) {
+        Write-Host $dir.FullName -NoNewline
+        Write-Host ('.' * (120 - $dir.FullName.Length)) -NoNewline
+        rm $dir.FullName -Resurse -force
+        Write-Host ' DELETED' -ForegroundColor Green
+        $count++
+      }
+    }
+    return $count;
+  }
 }
 
 
