@@ -55,7 +55,7 @@ function hosts(){
   c:\windows\system32\notepad.exe c:\windows\system32\drivers\etc\hosts
 }
 
-function Convert-ToHashTable{
+function ConvertTo-HashTable{
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, Position=0)]
@@ -75,4 +75,4 @@ function Convert-ToHashTable{
   return $object
 }
 
-Export-ModuleMember Convert-ToHashTable, hosts, npp, gac, iis, off, reboot, lock
+Export-ModuleMember ConvertTo-HashTable, hosts, npp, gac, iis, off, reboot, lock
