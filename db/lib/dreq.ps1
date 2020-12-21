@@ -1,4 +1,4 @@
-Using module ..\..\apps\CommandBase.psm1
+Using module ..\..\apps\cmdbase.psm1
 
 class DelRequestCommand : CommandBase {
   hidden $profiles;
