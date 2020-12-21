@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "develop": {
+      "server": "server.com",
+      "database": "dbName",
+      "user": "",
+      "password": ""
+    },
+    "testing": {
+      "server": "server.com",
+      "database": "dbName",
+      "user": "",
+      "password": ""
+    }
+  }
+}
