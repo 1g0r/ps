@@ -3,7 +3,7 @@
 . $PSScriptRoot\lib\dreq.ps1
 
 $dbConfigPath = Join-Path $PSScriptRoot '\config\db.json'
-$config = (Get-Content $dbConfigPath) -join "`n" | ConvertFrom-Json | Convert-ToHashTable;
+$config = (Get-Content $dbConfigPath) -join "`n" | ConvertFrom-Json | ConvertTo-HashTable;
 
 $commands = @{
   delRequest = [DelRequestCommand]::new($config)
