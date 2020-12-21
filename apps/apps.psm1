@@ -62,3 +62,5 @@ function global:$name {
     & $closure
   }
 }
+
+Export-ModuleMember Create-Application
