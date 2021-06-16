@@ -8,6 +8,8 @@
     } else {
       Write-Host 'System proxy is Disabled'
     }
+    
+    Start-Sleep -s 5
   }
 }
 
