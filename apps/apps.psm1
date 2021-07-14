@@ -6,17 +6,39 @@ function toString($arr) {
   return $result.Remove($result.Length - 2, 2);
 }
 
+function ConvertFrom-PSObject {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$true,
+               ValueFromPipeline=$true,
+               ValueFromPipelineByPropertyName=$true,
+               Position=0)]
+    $object
+  )
+
+  $type = $object.GetType()
+  if($type.Name.Equals('PSCustomObject', [System.StringCompartion]::InvariantCultureIgnoreCase)) {
+    $result = @{};
+    $object.psobject.properties | % {$result[$_.name] = (ConvertFrom-PSObject $_.value)}
+    return $result;
+  }
+  if ($type.IsArray) {
+    $arr = @();
+    $object | % { $arr += ConvertFrom-PSObject $_ }
+    return $arr;
+  }
+  return $object;
+}
+
 function Create-Application {
   [CmdletBinding()]
   param(
     [Parameter(Position=0, Manatory=$true)]
     [ValidateNotNullOrEmpty()]
     [string] $name,
-    
     [Parameter(Position=1, Mandatory=$true)]
     [Hashtable]$commands
   )
-  
   begin {
     if ([string]::IsNullOrWhiteSpace($name)) {
       throw "Name ot the application can not be empty!"
@@ -46,17 +68,12 @@ function global:$name {
     `$command = `$commands[`$__name_of_command];
   }
   process {
-    `$argv = @(, `$command);
-    foreach (`$key in `$params.Keys) {
-      if (`$PSBoundParameters.ContainsKey(`$key) -and `$key -ne '__name_of_command') {
-        `$argv += @(, `$PSBoundParameters[`$key]);
-      }
-    }
-    `$command.Invoke(`$argv) | Out-Default
+    `$tmp = `$PSBoundParameters.Remove('__name_of_command');
+    `$command.Invoke(`$PSBoundParameters) | Out-Default
   }
 }
 "@
-      Write-Host $body
+      #Write-Host $body
       Invoke-Expression $body
     }.GetNewCosure()
     & $closure

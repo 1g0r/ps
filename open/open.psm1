@@ -12,10 +12,17 @@ function toString($arr) {
 
 function __openSingle([string] $name) {
   $app = $config | ?{ $_.code -eq $name }
-  if ([string]::IsNullOrEmpty($app.params)) {
-    Start-Process $app.path -RedirectStandardOutput 0
+  $out = $app["out"];
+  $in = if ($null -eq $out -or -not $out){
+    $true
   } else {
-    Start-Process $app.path $app.params -RedirectStandardOutput 0
+    $false
+  }
+  $workDir = Split-Path $app.path -Parent
+  if ([string]::IsNullOrEmpty($app.params)) {
+    Start-Process $app.path -LoadUserProfile -NoNewWindow:$in -WorkingDirectory $workDir | Out-Null
+  } else {
+    Start-Process $app.path $app.params -NoNewWindow:$in -LoadUserProfile -WorkingDirectory $workDir | Out-Null
   }
 }
 

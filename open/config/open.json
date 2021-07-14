@@ -1,5 +1,5 @@
 [
-  {"code": "totalcmd", "path": "c:\\Program Files\\Total Commander\\Totalcmd64.exe", "start": true},
+  {"code": "totalcmd", "path": "c:\\Program Files\\Total Commander\\Totalcmd64.exe", "start": true, "out":"true"},
   {"code": "postman", "path": "~\\Postman\\Postman.exe", "start": false},
   {"code": "config", "path": "c:\\Program Files (x86)\\Notepad++\\notepad++.exe", "params": "~\\Documents\\WindowsPowerShell\\Modules\\open\\config\\open.json", "start": false}
 ]

@@ -1,20 +1,25 @@
 {
-  "nuget": "c:\\...",
   "solutions": {
-    "sln1": "c:\\...",
-    "sln2": "c:\\..."
+    "root": "d:\\__repo\\common",
+    "path": "d:\\__repo\\common\\common.sln",
+    "nugetPath": "d:\\packages\\bin\\nuget.exe",
+    "ide": "c:\\Program Files\\Rider\\rider64.exe",
+    "packages": "d:\\packages"
   },
   "excludeBin": [
-    "c:\\..",
-    "c:\\.."
+    "d:\\__repo\\obj"
   ],
   "excludePackages": [
-    "log4net.2.0.0",
-    "xunit.5.5.5"
+    "AngularJS.Animate.1.5.0"
   ],
-  "repo": "c:\\...",
-  "packages": "c:\\...",
-  "user": "UserName",
-  "compiler": "c:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\MSBuild\\15.0\\Bin\\MSBuild.exe",
-  "ide": "c:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\devenv.exe"
+  "user": "login",
+  "profiles": {
+    "dev": {
+      "server": "",
+      "database": "",
+      "user": "",
+      "password": ""
+    },
+    "tst": {}
+  }
 }

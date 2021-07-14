@@ -1,7 +1,7 @@
 Using module ..\..\apps\cmdbase.psm1
 
 class WorkCommand : CommandBase {
-  WorkCommand() : base(@(), $this.script) {
+  WorkCommand($config) : base(@(), $this.script, $config) {
   }
   
   hidden [ScriptBlock] $script = {

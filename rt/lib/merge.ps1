@@ -2,14 +2,13 @@ Using module ..\..\apps\cmdbase.psm1
 
 class  MergeCommand : CommandBase {
   hidden [string] $user;
-  hidden [string] $repo;
   
   hidden [ScriptBlock] $script = {
-    param([MergeCommand]$self, [string]$from, [string]$to)
+    param([MergeCommand]$self, [hashtable]$solution, [string]$from, [string]$to)
     process {
       $curPath = Get-Location
       
-      cd $self.repo
+      cd $solution.root
       git checkout $from
       git pull
       git checkout "$($self.user)/$to"
@@ -20,10 +19,12 @@ class  MergeCommand : CommandBase {
   
   MergeCommand($config) : base(
     @(
-      [ParameterBase]::new("from", 1, $true, { [CommandBase]::getBranches($config.repo, $config.user, $false) }),
-      [ParameterBase]::new("to", 2, $true, { [CommandBase]::getBranches($config.repo, $config.user, $true) })
+      [ParameterBase]::new("from", 1, $true, { $t = pwd; return [CommandBase]::getBranches($t.Path, $config.user, $false); });
+      [ParameterBase]::new("to", 2, $true, { $t = pwd; return [CommandBase]::getBranches($t.Path, $config.user, $true); })
     ),
-    $this.script
+    $this.script, $config
   )
-  {}
+  {
+    $this.user = $config.user
+  }
 }

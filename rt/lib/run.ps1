@@ -13,7 +13,7 @@ class RunCommand : CommandBase {
       
       $slnConfig = $self.slnConfigReader.Invoke();
       foreach($projectName in $projects) {
-        $project = $this.projectsToRun[$projectName];
+        $project = $self.projectsToRun[$projectName];
         if ($null -ne $project -and $project -is [ScriptBlock]) {
           Write-Host "$word " -NoNewline -ForegroundColor Yellow
           Write-Host "'$projectName'" -NoNewline -ForegroundColor Green
@@ -28,9 +28,9 @@ class RunCommand : CommandBase {
   RunCommand($config, [System.Management.Automation.PSMethod]$slnConfigReader) : base(
     @(
       [ParameterBase]::new("projects", 1, $true, $this.projectsToRun.Keys, [string[]]),
-      [ParameterBase]::new("stop", 2, $false, [switch])
+      [ParameterBase]::new("stop", 2, $false, [Switch])
     ),
-    $this.script)
+    $this.script, $config)
   {
     $this.slnConfigReader = $slnconfigReader;
   }
@@ -49,12 +49,15 @@ class RunCommand : CommandBase {
     all = @('proj1', 'proj2', 'proj3');
     
     proj1 = {
-      param([string]#slnConfig, [switch]$stop)
+      param([string]$slnConfig, [switch]$stop)
       
       if (-not $stop.IsPresent) {
         $this.checkConfig($slnConfig)
       }
-      gps proj1 -ErrorAction SilentlyContinue | Kill -ErrorAction SilentlyContinue;
+      $existing = gps proj1 -ErrorAction SilentlyContinue
+      if ($existing -ne $null) {
+        $existing.Kill();
+      }
       if (-not $stop.IsPresent) {
         Write-Host "c:\..\bin\$slnConfig\proj1.exe"
         Start-Process -FilePath "c:\..\bin\$slnConfig\proj1.exe" -WindowStyle Minimized

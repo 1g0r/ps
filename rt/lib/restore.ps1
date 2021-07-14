@@ -1,21 +1,19 @@
 Using module ..\..\apps\cmdbase.psm1
 
 class RestoreCommand : CommandBase {
-  hidden [string] $nuget;
-  hidden [string] $solution;
-  
   hidden [ScriptBlock] $script = {
-    param([RestoreCommand]$self)
+    param([RestoreCommand]$self, [hashtable]$solution)
     process{
-      Write-Host "Restore NuGet packages ..." -ForegroundColor Yellow
-      & $self.nuget restore $self.solution | Out-Default
-      Write-Host "Restore NuGet packages done!" -ForegroundColor Green
+      if ($solution.ContainsKey("nugetPath")) {
+        Write-Host "Restore NuGet packages..." -ForegroundColor Yellow
+        & $solution.nugetPath restore $solution.path | Out-Default
+        Write-Host "Restore NuGet packages done!" -ForegroundColor Green
+      } else {
+        dotnet restore $solution.path | Out-Default
+      }
     }
   }
   
-  RestoreCommand($config):base(@(), $this.script)
-  {
-    $this.nuget = $config.nuget;
-    $this.solution = $config.solutions['name']
-  }
+  RestoreCommand($config):base(@(), $this.script, $config)
+  { }
 }
