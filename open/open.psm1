@@ -1,35 +1,78 @@
-#$PSScriptRoot = '~\Documents\WindowsPowerShell\Modules\open\'
+#$PSScriptRoot = '~\Documents\PowerShell\Modules\open\'
 $openConfigPath = Join-Path $PSScriptRoot '\config\open.json'
-$config = (Get-Content $openConfigPath) -join "`n" | ConvertFrom-Json | ConvertTo-HashTable
+$config = @(,(Get-Content $openConfigPath | ConvertFrom-Json)) | ConvertTo-HashTable
 
 function toString($arr) {
   $result = ""
-  $arr | %{
+  $arr | ForEach-Object{
     $result += "'$_', "
   }
   return $result.Remove($result.Length - 2, 2);
 }
 
-function __openSingle([string] $name) {
-  $app = $config | ?{ $_.code -eq $name }
-  $out = $app["out"];
-  $in = if ($null -eq $out -or -not $out){
-    $true
+function getAppConfig([string]$name) {
+  return $config | Where-Object { $_.code -eq $name }
+}
+
+function getParent([string] $name){
+  return (Get-Process -Name $name -ErrorAction SilentlyContinue | Where-Object MainWindowHandle -ne 0)
+}
+
+function isMultipleApp($appConfig) {
+  return $appConfig.ContainsKey("multiple") -and $appConfig["multiple"];
+}
+
+function showWindow($process)
+{
+  $sig = '
+    [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+    [DllImport("user32.dll")] public static extern int SetForegroundWindow(IntPtr hwnd);
+  '
+  #if ($Maximize) { $Mode = 3 } else { $Mode = 4 }
+  $type = Add-Type -MemberDefinition $sig -Name WindowAPI -PassThru
+  $hwnd = $process.MainWindowHandle
+  $null = $type::ShowWindowAsync($hwnd, 3)
+  $null = $type::SetForegroundWindow($hwnd) 
+}
+
+function startProcess($appConfig){
+  $out = $appConfig.ContainsKey("out") -and $appConfig["out"];
+
+  $workDir = Split-Path $appConfig["path"] -Parent
+  if ($out) {
+    $path = $appConfig.path;
+    $params = if ($appConfig.ContainsKey("params")) { $appConfig.params } else { "" }
+    $command = "Start-Process '$path' $params -LoadUserProfile -WorkingDirectory '$workDir' -WindowStyle Maximized";
+
+    pwsh.exe -Command $command
   } else {
-    $false
-  }
-  $workDir = Split-Path $app.path -Parent
-  if ([string]::IsNullOrEmpty($app.params)) {
-    Start-Process $app.path -LoadUserProfile -NoNewWindow:$in -WorkingDirectory $workDir | Out-Null
-  } else {
-    Start-Process $app.path $app.params -NoNewWindow:$in -LoadUserProfile -WorkingDirectory $workDir | Out-Null
+    Start-Process $appConfig.path $appConfig.params -LoadUserProfile -WorkingDirectory $workDir| Out-Null
   }
 }
 
-$appNames = toString ($config | %{$_.code})
+function startSingleProcess($appConfig) {
+  $process = getParent($appConfig.code);
+  if ($null -eq $process) {
+    startProcess($appConfig);
+  } else {
+    showWindow($process);
+  }
+}
+
+function __openSingle([string] $name) {
+  $appConfig = getAppConfig($name);
+
+  if (isMultipleApp($appConfig)) {
+    startProcess($appConfig);
+  } else {
+    startSingleProcess($appConfig);
+  }
+}
+
+$appNames = toString ($config | ForEach-Object{$_.code})
 
 $openBody = @"
-function open {
+function o {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=`$true, Position=0)]
@@ -39,19 +82,19 @@ function open {
   begin {}
   process {
     `$names | %{
-      __openSungle `$_
+      __openSingle `$_
     }
   }
 }
 "@;
 
 function run() {
-  $config | %{
+  $config | ForEach-Object{
     if ($null -ne $_['start'] -and $_.start -eq $true) {
-      open $_.code
+      o $_.code
     }
   }
 }
 
 Invoke-Expression $openBody
-Export-ModuleMember open, run
+Export-ModuleMember o, run
