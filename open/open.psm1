@@ -42,11 +42,11 @@ function startProcess($appConfig){
   if ($out) {
     $path = $appConfig.path;
     $params = if ($appConfig.ContainsKey("params")) { $appConfig.params } else { "" }
-    $command = "Start-Process '$path' $params -LoadUserProfile -WorkingDirectory '$workDir' -WindowStyle Maximized";
+    $command = "Start-Process '$path' '$params' -LoadUserProfile -WorkingDirectory '$workDir' -WindowStyle Maximized";
 
     pwsh.exe -Command $command
   } else {
-    Start-Process $appConfig.path $appConfig.params -LoadUserProfile -WorkingDirectory $workDir| Out-Null
+    Start-Process "$($appConfig.path)" "$($appConfig.params)" -LoadUserProfile -NoNewWindow -WorkingDirectory $workDir| Out-Null
   }
 }
 
@@ -72,7 +72,7 @@ function __openSingle([string] $name) {
 $appNames = toString ($config | ForEach-Object{$_.code})
 
 $openBody = @"
-function o {
+function open {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=`$true, Position=0)]
@@ -91,10 +91,10 @@ function o {
 function run() {
   $config | ForEach-Object{
     if ($null -ne $_['start'] -and $_.start -eq $true) {
-      o $_.code
+      open $_.code
     }
   }
 }
 
 Invoke-Expression $openBody
-Export-ModuleMember o, run
+Export-ModuleMember open, run
