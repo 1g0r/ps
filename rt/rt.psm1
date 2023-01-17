@@ -15,16 +15,16 @@ $config = (Get-Content $rtConfigPath) -join "`n" | ConvertFrom-Json | ConvertTo-
 
 $build = [BuildCommand]::new($config);
 $commands = @{
-  branch = [BranchCommand]::new($config);
-  build = $build;
-  clear = [ClearCommand]::new($config, $build.clearConfig);
-  delete = [DeleteCommand]::new($config);
-  merge = [MergeCommand]::new($config);
-  open = [OpenCommand]::new($config);
-  restore = [RestoreCommand]::new($config);
-  run = [RunCommand]::new($config, $build.getConfig);
-  work = [WorkCommand]::new($config);
+    branch  = [BranchCommand]::new($config);
+    build   = $build;
+    clear   = [ClearCommand]::new($config, $build.clearConfig);
+    delete  = [DeleteCommand]::new($config);
+    merge   = [MergeCommand]::new($config);
+    open    = [OpenCommand]::new($config);
+    restore = [RestoreCommand]::new($config);
+    run     = [RunCommand]::new($config, $build.getConfig);
+    work    = [WorkCommand]::new($config);
 };
 
-Create-Application 'rt' $commands
-Export-ModuleMember rt
+Create-Application 'rt' $commands;
+Export-ModuleMember rt;
